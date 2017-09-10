@@ -9,15 +9,14 @@ open class SendMessageModule {
 
     @PerActivity
     @Provides
-    internal fun provideSendMessageView(sendMessageActivity: SendMessageActivity):
-            SendMessageContract.View {
-        return sendMessageActivity
+    internal fun provideSendMessageView(view: SendMessageActivity): SendMessageContract.View {
+        return view
     }
 
     @PerActivity
     @Provides
-    internal fun provideSendMessagePresenter(sendMessageView: SendMessageContract.View):
-            SendMessageContract.Presenter {
-        return SendMessagePresenter(sendMessageView)
+    internal fun provideSendMessagePresenter(view: SendMessageContract.View,
+                                             api: SendMessageApi): SendMessageContract.Presenter {
+        return SendMessagePresenter(view, api)
     }
 }

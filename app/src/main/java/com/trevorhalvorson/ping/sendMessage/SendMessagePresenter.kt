@@ -1,23 +1,43 @@
 package com.trevorhalvorson.ping.sendMessage
 
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class SendMessagePresenter @Inject constructor(private val sendMessageView: SendMessageContract.View) : SendMessageContract.Presenter {
+class SendMessagePresenter @Inject constructor(
+        private val view: SendMessageContract.View,
+        private val api: SendMessageApi) : SendMessageContract.Presenter {
+
+    private val subscription = CompositeDisposable()
 
     init {
-        sendMessageView.setPresenter(this)
     }
 
     override fun start() {
-        TODO("not implemented")
+
     }
 
     override fun stop() {
-        TODO("not implemented")
+        subscription.clear()
     }
 
     override fun sendMessage(message: String) {
-        TODO("not implemented")
+        view.showProgress()
+
+        subscription.add(api.postMessage(SendMessageRequest(message))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnTerminate { view.hideProgress() }
+                .subscribe({
+                    if (it.success) {
+                        view.clearInput()
+                    } else {
+                        view.showError(it.message)
+                    }
+                }, {
+                    view.showError(it.message)
+                }))
     }
 
 }

@@ -3,4 +3,7 @@
     <string name="send_button_text">Send Message</string>
     <string name="dialer_phone_edit_hint">Phone Number</string>
     <string name="logo_image_content_description">logo</string>
+    <string name="progress_dialog_title_text">Sending…</string>
+    <string name="progress_dialog_message_text">Your message is on its way</string>
+    <string name="send_message_error_dialog_title_text">Error</string>
 </resources>

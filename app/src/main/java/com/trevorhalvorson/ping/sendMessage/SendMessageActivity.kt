@@ -1,5 +1,7 @@
 package com.trevorhalvorson.ping.sendMessage
 
+import android.app.AlertDialog
+import android.app.ProgressDialog
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.telephony.PhoneNumberUtils
@@ -8,6 +10,7 @@ import android.text.TextWatcher
 import android.util.Patterns
 import android.view.View
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.trevorhalvorson.ping.BuildConfig
 import com.trevorhalvorson.ping.R
 import dagger.android.AndroidInjection
@@ -24,24 +27,34 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
     }
 
     override fun showProgress() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        progressDialog = ProgressDialog.show(this, getString(R.string.progress_dialog_title_text),
+                getString(R.string.progress_dialog_message_text), true, false)
     }
 
     override fun hideProgress() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        progressDialog?.dismiss()
     }
 
-    override fun showError() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun showError(error: String?) {
+        if (error != null) {
+            errorDialog = AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.send_message_error_dialog_title_text))
+                    .setMessage(error)
+                    .create()
+            errorDialog?.show()
+        }
     }
 
     override fun hideError() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        errorDialog?.dismiss()
     }
 
     override fun clearInput() {
         number_edit_text.text.clear()
     }
+
+    private var progressDialog: ProgressDialog? = null
+    private var errorDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,11 +67,15 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
         val copy = BuildConfig.COPY
         val message = BuildConfig.MESSAGE
         val logo = BuildConfig.LOGO
-        val url = BuildConfig.URL
 
         title_text.text = title
         copy_text.text = copy
-        logo_image.setImageResource(resources.getIdentifier(logo, "drawable", packageName))
+
+        if (BuildConfig.DEBUG) {
+            logo_image.setImageResource(resources.getIdentifier(logo, "drawable", packageName))
+        } else {
+            Glide.with(this).load(logo).into(logo_image)
+        }
 
         send_button.setOnClickListener {
             sendMessagePresenter.sendMessage(message)
@@ -93,7 +110,7 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
                     number_edit_text.text.length)
         }
         num_pad_del.setOnLongClickListener {
-            number_edit_text.text.clear()
+            clearInput()
             true
         }
     }
@@ -103,6 +120,11 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
     }
 
     override fun onBackPressed() {
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        hideSystemUI()
     }
 
     private fun hideSystemUI() {

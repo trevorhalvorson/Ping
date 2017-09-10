@@ -11,7 +11,7 @@ interface SendMessageContract {
 
         fun hideProgress()
 
-        fun showError()
+        fun showError(error: String?)
 
         fun hideError()
 
