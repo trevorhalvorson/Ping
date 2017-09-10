@@ -1,20 +1,18 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
 
-def title, copy, message, logo, url_base, url_path
+def props = project.getProperties()
+
+def title, copy, message, logo, urlBase, urlPath
 task(configure) {
-    def props = project.getProperties()
     title = props.get("title")
     copy = props.get("copy")
     message = props.get("message")
     logo = props.get("logo")
-    url_base = props.get("url_base")
-    url_path = props.get("url_path")
+    urlBase = props.get("urlBase")
+    urlPath = props.get("urlPath")
 }
 
 android {
@@ -30,10 +28,17 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file(String.valueOf(System.getenv("KEYSTORE_PATH")))
-            storePassword System.getenv("KEYSTORE_PASSWORD")
-            keyAlias System.getenv("KEY_ALIAS")
-            keyPassword System.getenv("KEY_PASSWORD")
+            def keystorePropsFile = rootProject.file("keystore.properties")
+            if (keystorePropsFile.exists()) {
+                def signingProps = new Properties()
+                signingProps.load(new FileInputStream(keystorePropsFile))
+                if (signingProps.get("storeFile") != null) {
+                    storeFile file(signingProps.get("storeFile"))
+                    storePassword signingProps.get("storePassword")
+                    keyAlias signingProps.get("keyAlias")
+                    keyPassword signingProps.get("keyPassword")
+                }
+            }
         }
     }
     buildTypes {
@@ -47,8 +52,8 @@ android {
             buildConfigField("String", "COPY", "$copy")
             buildConfigField("String", "MESSAGE", "$message")
             buildConfigField("String", "LOGO", "$logo")
-            buildConfigField("String", "URL_BASE", "$url_base")
-            buildConfigField("String", "URL_PATH", "$url_path")
+            buildConfigField("String", "URL_BASE", "$urlBase")
+            buildConfigField("String", "URL_PATH", "$urlPath")
         }
         debug {
             buildConfigField("String", "TITLE", "\"TEST TITLE\"")
@@ -59,10 +64,9 @@ android {
             buildConfigField("String", "URL_PATH", "\"ping/test\"")
         }
     }
-}
-
-kapt {
-    generateStubs = true
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
 }
 
 dependencies {
