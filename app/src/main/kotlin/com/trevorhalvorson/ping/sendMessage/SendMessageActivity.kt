@@ -106,8 +106,10 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
         num_pad_0.setOnClickListener(this)
 
         num_pad_del.setOnClickListener {
-            number_edit_text.text.delete(number_edit_text.text.length - 1,
-                    number_edit_text.text.length)
+            if (number_edit_text.text.isNotEmpty()) {
+                number_edit_text.text.delete(number_edit_text.text.length - 1,
+                        number_edit_text.text.length)
+            }
         }
         num_pad_del.setOnLongClickListener {
             clearInput()
