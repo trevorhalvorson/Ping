@@ -15,17 +15,13 @@ interface SendMessageContract {
 
         fun hideError()
 
-        fun showInputState(valid: Boolean)
-
         fun clearInput()
 
     }
 
     interface Presenter : BasePresenter {
 
-        fun updateInputState(input: CharSequence?)
-
-        fun sendMessage()
+        fun sendMessage(message: String)
 
     }
 }

@@ -1,6 +1,5 @@
 package com.trevorhalvorson.ping.sendMessage
 
-import android.util.Patterns
 import javax.inject.Inject
 
 class SendMessagePresenter @Inject constructor(private val sendMessageView: SendMessageContract.View) : SendMessageContract.Presenter {
@@ -17,11 +16,7 @@ class SendMessagePresenter @Inject constructor(private val sendMessageView: Send
         TODO("not implemented")
     }
 
-    override fun updateInputState(input: CharSequence?) {
-        sendMessageView.showInputState(Patterns.PHONE.matcher(input).matches())
-    }
-
-    override fun sendMessage() {
+    override fun sendMessage(message: String) {
         TODO("not implemented")
     }
 
