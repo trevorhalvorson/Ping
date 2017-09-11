@@ -14,7 +14,7 @@ Available properties:
 
 Example:
 
-`./gradlew assembleRelease task configure '-Ptitle="Sample Title"' '-Pcopy="Sample copy mesage"' '-Pmessage="Sample SMS message to send"' '-Plogo="https://sample.com/logo.png"' '-Purl_base="http://sample.com"' '-Purl_path="ping"'`
+`./gradlew assembleRelease task configure '-Ptitle="Sample Title"' '-Pcopy="Sample copy mesage"' '-Pmessage="Sample SMS message to send"' '-Plogo="https://sample.com/logo.png"' '-PurlBase="http://sample.com"' '-PurlPath="ping"'`
 
 In this example a `POST` request with the body `{"message": "Sample SMS message to send"}` will be sent to `http://sample.com/ping`
 
