@@ -2,7 +2,6 @@ package com.trevorhalvorson.ping.sendMessage
 
 import android.app.AlertDialog
 import android.app.ProgressDialog
-import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.telephony.PhoneNumberUtils
@@ -14,7 +13,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.RequestOptions.*
 import com.google.android.libraries.remixer.annotation.*
 import com.google.android.libraries.remixer.ui.view.RemixerFragment
@@ -63,8 +61,10 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
     private var progressDialog: ProgressDialog? = null
     private var errorDialog: AlertDialog? = null
 
-    private var message: String? = null
-    private var logo: String? = null
+    private var message = BuildConfig.MESSAGE
+    private var imageUrl = BuildConfig.IMAGE_URL
+    private var pin = BuildConfig.PIN
+    private var blankClickCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,22 +73,8 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
 
         hideSystemUI()
 
-        val title = BuildConfig.TITLE
-        val copy = BuildConfig.COPY
-        message = BuildConfig.MESSAGE
-        logo = BuildConfig.LOGO
-
-        title_text.text = title
-        copy_text.text = copy
-
-        if (BuildConfig.DEBUG) {
-            logo_image.setImageResource(resources.getIdentifier(logo, "drawable", packageName))
-        } else {
-            Glide.with(this).load(logo).into(logo_image)
-        }
-
         send_button.setOnClickListener {
-            sendMessagePresenter.sendMessage(message!!)
+            sendMessagePresenter.sendMessage(message)
         }
 
         number_edit_text.addTextChangedListener(object : TextWatcher {
@@ -127,7 +113,11 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
         }
 
         num_pad_blank.setOnClickListener {
-            RemixerFragment.newInstance().attachToButton(this, num_pad_blank)
+            // TODO: launch dialog and require PIN before show remix fragment
+            if (blankClickCount++ == 7) {
+                RemixerFragment.newInstance().attachToButton(this, num_pad_blank)
+                blankClickCount = 0
+            }
         }
 
         RemixerBinder.bind(this)
@@ -157,14 +147,15 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
 
     // Remixer UI controls
 
-    @StringVariableMethod(title = "Title Text", key = "Title", initialValue = "Title")
+    @StringVariableMethod(title = "Title Text", initialValue = BuildConfig.TITLE_TEXT)
     fun setTitleText(text: String?) {
         if (text != null) {
             title_text.text = text
         }
     }
 
-    @RangeVariableMethod(title = "Title Text Size", initialValue = 24F, minValue = 12F, maxValue = 120F)
+    @RangeVariableMethod(title = "Title Text Size", initialValue = BuildConfig.TITLE_TEXT_SIZE,
+            minValue = 12F, maxValue = 120F)
     fun setTitleTextSize(textSize: Float?) {
         if (textSize != null) {
             title_text.textSize = textSize
@@ -172,7 +163,8 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
     }
 
     // TODO: find a cleaner way to add colors on these methods
-    @ColorListVariableMethod(title = "Title Text Color", limitedToValues = intArrayOf(
+    @ColorListVariableMethod(title = "Title Text Color",
+            initialValue = BuildConfig.TITLE_TEXT_COLOR, limitedToValues = intArrayOf(
             0xFF000000.toInt(),
             0xFFE91E63.toInt(),
             0xFF9C27B0.toInt(),
@@ -203,35 +195,38 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
         }
     }
 
-    @StringVariableMethod(title = "Image URL")
+    @StringVariableMethod(title = "Image URL", initialValue = BuildConfig.IMAGE_URL)
     fun setLogoImageUrl(url: String?) {
         if (!TextUtils.isEmpty(url)) {
-            logo = url
-            Glide.with(this).load(logo).apply(centerCropTransform()).into(logo_image)
+            imageUrl = url!!
+            Glide.with(this).load(imageUrl).apply(centerCropTransform()).into(logo_image)
         }
     }
 
-    @RangeVariableMethod(title = "Image Width", initialValue = 200F, minValue = 12F, maxValue = 1200F)
+    @RangeVariableMethod(title = "Image Width", initialValue = BuildConfig.IMAGE_WIDTH,
+            minValue = 0F, maxValue = 1200F)
     fun setLogoImageWidth(width: Float?) {
         if (width != null) {
             logo_image.layoutParams.width = width.toInt()
             logo_image.requestLayout()
             Glide.with(this).clear(logo_image)
-            Glide.with(this).load(logo).into(logo_image)
+            Glide.with(this).load(imageUrl).into(logo_image)
         }
     }
 
-    @RangeVariableMethod(title = "Image Height", initialValue = 200F, minValue = 12F, maxValue = 1200F)
+    @RangeVariableMethod(title = "Image Height", initialValue = BuildConfig.IMAGE_HEIGHT,
+            minValue = 0F, maxValue = 1200F)
     fun setLogoImageHeight(height: Float?) {
         if (height != null) {
             logo_image.layoutParams.height = height.toInt()
             logo_image.requestLayout()
             Glide.with(this).clear(logo_image)
-            Glide.with(this).load(logo).into(logo_image)
+            Glide.with(this).load(imageUrl).into(logo_image)
         }
     }
 
-    @StringListVariableMethod(title = "Image Scale Type", limitedToValues = arrayOf(
+    @StringListVariableMethod(title = "Image Scale Type",
+            initialValue = BuildConfig.IMAGE_SCALE_TYPE, limitedToValues = arrayOf(
             "CENTER",
             "CENTER_CROP",
             "CENTER_INSIDE",
@@ -252,24 +247,65 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
         logo_image.scaleType = scaleType
         logo_image.requestLayout()
         Glide.with(this).clear(logo_image)
-        Glide.with(this).load(logo).into(logo_image)
+        Glide.with(this).load(imageUrl).into(logo_image)
     }
 
-    @StringVariableMethod(title = "Copy Text", key = "Copy", initialValue = "Your copy text here.")
+    @StringVariableMethod(title = "Copy Text", initialValue = BuildConfig.COPY_TEXT)
     fun setCopyText(text: String?) {
         if (text != null) {
             copy_text.text = text
         }
     }
 
-    @RangeVariableMethod(title = "Copy Text Size", initialValue = 20F, minValue = 12F, maxValue = 120F)
+    @RangeVariableMethod(title = "Copy Text Size", initialValue = BuildConfig.COPY_TEXT_SIZE,
+            minValue = 12F, maxValue = 120F)
     fun setCopyTextSize(textSize: Float?) {
         if (textSize != null) {
             copy_text.textSize = textSize
         }
     }
 
-    @ColorListVariableMethod(title = "Copy Text Color", limitedToValues = intArrayOf(
+    @ColorListVariableMethod(title = "Copy Text Color", initialValue = BuildConfig.COPY_TEXT_COLOR,
+            limitedToValues = intArrayOf(
+                    0xFF000000.toInt(),
+                    0xFFE91E63.toInt(),
+                    0xFF9C27B0.toInt(),
+                    0xFF673AB7.toInt(),
+                    0xFF3F51B5.toInt(),
+                    0xFF2196F3.toInt(),
+                    0xFF03A9F4.toInt(),
+                    0xFF00BCD4.toInt(),
+                    0xFF009688.toInt(),
+                    0xFF4CAF50.toInt(),
+                    0xFF8BC34A.toInt(),
+                    0xFFFFEB3B.toInt(),
+                    0xFFFFC107.toInt(),
+                    0xFF8BC34A.toInt(),
+                    0xFFFF9800.toInt(),
+                    0xFFFF5722.toInt(),
+                    0xFF9E9E9E.toInt(),
+                    0xFF607D8B.toInt(),
+                    0xFF424242.toInt(),
+                    0xFF37474F.toInt(),
+                    0xFF212121.toInt(),
+                    0xFF263238.toInt(),
+                    0xFFFFFFFF.toInt()
+            ))
+    fun setCopyTextColor(color: Int?) {
+        if (color != null) {
+            copy_text.setTextColor(color)
+        }
+    }
+
+    @StringVariableMethod(title = "Send Button Text", initialValue = BuildConfig.SEND_BUTTON_TEXT)
+    fun setSendButtonText(text: String?) {
+        if (text != null) {
+            send_button.text = text
+        }
+    }
+
+    @ColorListVariableMethod(title = "Send Button Text Color",
+            initialValue = BuildConfig.SEND_BUTTON_TEXT_COLOR, limitedToValues = intArrayOf(
             0xFF000000.toInt(),
             0xFFE91E63.toInt(),
             0xFF9C27B0.toInt(),
@@ -294,20 +330,79 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
             0xFF263238.toInt(),
             0xFFFFFFFF.toInt()
     ))
-    fun setCopyTextColor(color: Int?) {
+    fun setSendButtonTextColor(color: Int?) {
         if (color != null) {
-            copy_text.setTextColor(color)
+            send_button.setTextColor(color)
         }
     }
 
-    @RangeVariableMethod(title = "Phone Number Input Text Size", initialValue = 24F, minValue = 12F, maxValue = 120F)
-    fun setPhoneNumberInputTextSize(textSize: Float?) {
-        if (textSize != null) {
-            number_edit_text.textSize = textSize
+    @ColorListVariableMethod(title = "Send Message Button Color",
+            initialValue = BuildConfig.SEND_BUTTON_BACKGROUND_COLOR, limitedToValues = intArrayOf(
+            0xFFCCCCCC.toInt(),
+            0xFF000000.toInt(),
+            0xFFE91E63.toInt(),
+            0xFF9C27B0.toInt(),
+            0xFF673AB7.toInt(),
+            0xFF3F51B5.toInt(),
+            0xFF2196F3.toInt(),
+            0xFF03A9F4.toInt(),
+            0xFF00BCD4.toInt(),
+            0xFF009688.toInt(),
+            0xFF4CAF50.toInt(),
+            0xFF8BC34A.toInt(),
+            0xFFFFEB3B.toInt(),
+            0xFFFFC107.toInt(),
+            0xFF8BC34A.toInt(),
+            0xFFFF9800.toInt(),
+            0xFFFF5722.toInt(),
+            0xFF9E9E9E.toInt(),
+            0xFF607D8B.toInt(),
+            0xFF424242.toInt(),
+            0xFF37474F.toInt(),
+            0xFF212121.toInt(),
+            0xFF263238.toInt(),
+            0xFFFFFFFF.toInt()
+    ))
+    fun setSendButtonBackgroundColor(color: Int?) {
+        if (color != null) {
+            send_button.setBackgroundColor(color)
         }
     }
 
-    @ColorListVariableMethod(title = "Phone Number Input Text Color", limitedToValues = intArrayOf(
+    @ColorListVariableMethod(title = "Phone Number Background Color",
+            initialValue = BuildConfig.PHONE_INPUT_BACKGROUND_COLOR, limitedToValues = intArrayOf(
+            0xFF000000.toInt(),
+            0xFFE91E63.toInt(),
+            0xFF9C27B0.toInt(),
+            0xFF673AB7.toInt(),
+            0xFF3F51B5.toInt(),
+            0xFF2196F3.toInt(),
+            0xFF03A9F4.toInt(),
+            0xFF00BCD4.toInt(),
+            0xFF009688.toInt(),
+            0xFF4CAF50.toInt(),
+            0xFF8BC34A.toInt(),
+            0xFFFFEB3B.toInt(),
+            0xFFFFC107.toInt(),
+            0xFF8BC34A.toInt(),
+            0xFFFF9800.toInt(),
+            0xFFFF5722.toInt(),
+            0xFF9E9E9E.toInt(),
+            0xFF607D8B.toInt(),
+            0xFF424242.toInt(),
+            0xFF37474F.toInt(),
+            0xFF212121.toInt(),
+            0xFF263238.toInt(),
+            0xFFFFFFFF.toInt()
+    ))
+    fun setPhoneNumberBackgroundTextColor(color: Int?) {
+        if (color != null) {
+            number_text_input_layout.setBackgroundColor(color)
+        }
+    }
+
+    @ColorListVariableMethod(title = "Phone Number Input Text Color",
+            initialValue = BuildConfig.PHONE_INPUT_TEXT_COLOR, limitedToValues = intArrayOf(
             0xFF000000.toInt(),
             0xFFE91E63.toInt(),
             0xFF9C27B0.toInt(),
@@ -334,42 +429,12 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
     ))
     fun setPhoneNumberInputTextColor(color: Int?) {
         if (color != null) {
-            copy_text.setTextColor(color)
+            number_edit_text.setTextColor(color)
         }
     }
 
-    @ColorListVariableMethod(title = "Message Button Text Color", limitedToValues = intArrayOf(
-            0xFF000000.toInt(),
-            0xFFE91E63.toInt(),
-            0xFF9C27B0.toInt(),
-            0xFF673AB7.toInt(),
-            0xFF3F51B5.toInt(),
-            0xFF2196F3.toInt(),
-            0xFF03A9F4.toInt(),
-            0xFF00BCD4.toInt(),
-            0xFF009688.toInt(),
-            0xFF4CAF50.toInt(),
-            0xFF8BC34A.toInt(),
-            0xFFFFEB3B.toInt(),
-            0xFFFFC107.toInt(),
-            0xFF8BC34A.toInt(),
-            0xFFFF9800.toInt(),
-            0xFFFF5722.toInt(),
-            0xFF9E9E9E.toInt(),
-            0xFF607D8B.toInt(),
-            0xFF424242.toInt(),
-            0xFF37474F.toInt(),
-            0xFF212121.toInt(),
-            0xFF263238.toInt(),
-            0xFFFFFFFF.toInt()
-    ))
-    fun setMessageButtonTextColor(color: Int?) {
-        if (color != null) {
-            send_button.setTextColor(color)
-        }
-    }
-
-    @ColorListVariableMethod(title = "Number Pad Text Color", limitedToValues = intArrayOf(
+    @ColorListVariableMethod(title = "Number Pad Text Color",
+            initialValue = BuildConfig.NUM_PAD_TEXT_COLOR, limitedToValues = intArrayOf(
             0xFF000000.toInt(),
             0xFFE91E63.toInt(),
             0xFF9C27B0.toInt(),
@@ -410,7 +475,8 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
         }
     }
 
-    @ColorListVariableMethod(title = "Number Pad Background Color", limitedToValues = intArrayOf(
+    @ColorListVariableMethod(title = "Number Pad Background Color",
+            initialValue = BuildConfig.NUM_PAD_BACKGROUND_COLOR, limitedToValues = intArrayOf(
             0xFFFFFFFF.toInt(),
             0xFFE91E63.toInt(),
             0xFF9C27B0.toInt(),
@@ -435,13 +501,14 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
             0xFF263238.toInt(),
             0xFF000000.toInt()
     ))
-    fun setPhoneNumberPadContainerColor(color: Int?) {
+    fun setPhoneNumberPadBackgroundColor(color: Int?) {
         if (color != null && layout_number_pad != null) {
             layout_number_pad.setBackgroundColor(color)
         }
     }
 
-    @ColorListVariableMethod(title = "Main Background Color", limitedToValues = intArrayOf(
+    @ColorListVariableMethod(title = "Main Background Color",
+            initialValue = BuildConfig.BACKGROUND_COLOR, limitedToValues = intArrayOf(
             0xFFFFFFFF.toInt(),
             0xFFE91E63.toInt(),
             0xFF9C27B0.toInt(),
@@ -472,10 +539,17 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
         }
     }
 
-    @StringVariableMethod(title = "Message")
+    @StringVariableMethod(title = "Message", initialValue = BuildConfig.MESSAGE)
     fun setMessageText(s: String?) {
         if (s != null) {
             message = s
+        }
+    }
+
+    @StringVariableMethod(title = "PIN", initialValue = BuildConfig.PIN)
+    fun setPin(s: String?) {
+        if (s != null) {
+            pin = s
         }
     }
 }

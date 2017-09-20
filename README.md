@@ -8,13 +8,13 @@ Available properties:
 - `title`: Headline shown at the top of the app
 - `copy`: Copy text
 - `message`: The message the submitted phone number will receive
-- `logo`: Public URL of an image
+- `imageUrl`: Public URL of an image
 - `urlBase`: Base URL of where the `POST` request will be sent
 - `urlPath`: URL path of where the `POST` request will be sent
 
 Example:
 
-`./gradlew assembleRelease task configure '-Ptitle="Sample Title"' '-Pcopy="Sample copy mesage"' '-Pmessage="Sample SMS message to send"' '-Plogo="https://sample.com/logo.png"' '-PurlBase="http://sample.com"' '-PurlPath="ping"'`
+`./gradlew assembleRelease task configure '-Ptitle="Sample Title"' '-Pcopy="Sample copy mesage"' '-Pmessage="Sample SMS message to send"' '-Plogo="https://sample.com/imageUrl.png"' '-PurlBase="http://sample.com"' '-PurlPath="ping"'`
 
 In this example a `POST` request with the body `{"message": "Sample SMS message to send"}` will be sent to `http://sample.com/ping`
 

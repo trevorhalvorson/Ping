@@ -2,7 +2,7 @@
     <string name="app_name">Ping</string>
     <string name="send_button_text">Send Message</string>
     <string name="dialer_phone_edit_hint">Phone Number</string>
-    <string name="logo_image_content_description">logo</string>
+    <string name="image_content_description">Your configurable image</string>
     <string name="progress_dialog_title_text">Sending…</string>
     <string name="progress_dialog_message_text">Your message is on its way</string>
     <string name="send_message_error_dialog_title_text">Error</string>
