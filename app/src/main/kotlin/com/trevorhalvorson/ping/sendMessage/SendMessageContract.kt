@@ -21,7 +21,7 @@ interface SendMessageContract {
 
     interface Presenter : BasePresenter {
 
-        fun sendMessage(message: String)
+        fun sendMessage(phoneNumber: String, message: String)
 
     }
 }

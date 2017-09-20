@@ -22,10 +22,10 @@ class SendMessagePresenter @Inject constructor(
         subscription.clear()
     }
 
-    override fun sendMessage(message: String) {
+    override fun sendMessage(phoneNumber: String, message: String) {
         view.showProgress()
 
-        subscription.add(api.postMessage(SendMessageRequest(message))
+        subscription.add(api.postMessage(SendMessageRequest(phoneNumber, message))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnTerminate { view.hideProgress() }

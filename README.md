@@ -33,9 +33,11 @@ Example:
 
 `./gradlew assembleRelease task configure '-PtitleText="Sample Title"' '-PcopyText="Sample copy mesage"' '-Pmessage="Sample SMS message to send"' '-PimageUrl="https://sample.com/imageUrl.png"' '-PurlBase="http://sample.com"' '-PurlPath="ping/android"'`
 
-In this example a `POST` request with the body `{"message": "Sample SMS message to send"}` will be sent to `http://sample.com/ping/android`
+In this example, if the user enters the phone number "0000000000" and click the button,
+a `POST` request with the body `{"phoneNumber": "0000000000", "message": "Sample SMS message to send"}`
+will be sent to `http://sample.com/ping/android`
 
-The expected response is `{"success": true, "message": "error details if needed"}`
+The expected response is `{"success": true, "message": "details if needed"}`
 
 ### Signing
 

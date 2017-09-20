@@ -65,6 +65,7 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
     private var imageUrl = BuildConfig.IMAGE_URL
     private var pin = BuildConfig.PIN
     private var blankClickCount = 0
+    private var phoneNumber: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +75,7 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
         hideSystemUI()
 
         send_button.setOnClickListener {
-            sendMessagePresenter.sendMessage(message)
+            sendMessagePresenter.sendMessage(phoneNumber!!, message)
         }
 
         number_edit_text.addTextChangedListener(object : TextWatcher {
@@ -84,9 +85,12 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
-            override fun onTextChanged(p0: CharSequence, p1: Int, p2: Int, p3: Int) {
-                send_button.isEnabled = Patterns.PHONE.matcher(p0).matches() &&
-                        !PhoneNumberUtils.isEmergencyNumber(p0.toString())
+            override fun onTextChanged(number: CharSequence, p1: Int, p2: Int, p3: Int) {
+                val isValid = Patterns.PHONE.matcher(number).matches() &&
+                        !PhoneNumberUtils.isEmergencyNumber(number.toString());
+                send_button.isEnabled = isValid
+
+                if (isValid) phoneNumber = number.toString()
             }
         })
 
