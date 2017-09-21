@@ -1,5 +1,11 @@
 # Ping
 
+### Configuring
+
+UI configuration is implemented using [Remixer](https://github.com/material-foundation/material-remixer-android).
+
+[Configuration demo](assets/ping-configure-demo.mp4)
+
 ### Building
 
 The APK is configured using [gradle project properties](https://docs.gradle.org/current/userguide/build_environment.html#sec:gradle_properties_and_system_properties).
@@ -33,9 +39,13 @@ Example:
 
 `./gradlew assembleRelease task configure -PtitleText='"Sample Title"' -PtitleTextSize=40F -PtitleTextColor=0xFF000000 -PimageUrl='"https://avatars1.githubusercontent.com/u/30177?v=4&s=200"' -PimageWidth=250F -PimageHeight=250F -PimageScaleType='"CENTER_CROP"' -PcopyText='"Lorem ipsum"' -PcopyTextSize=20F -PcopyTextColor=0xFF000000 -PsendButtonText='"SEND"' -PsendButtonTextColor=0xFF000000 -PsendButtonBackgroundColor=0xFFCCCCCC -PphoneInputTextColor=0xFF000000 -PphoneInputBackgroundColor=0xFFFFFFFF -PnumPadTextColor=0xFF000000 -PnumPadBackgroundColor=0xFFFFFFFF -PbackgroundColor=0xFFFFFFFF -Ppin='"0000"' -Pmessage='"Sample SMS message to send"' -PurlBase='"http://sample.com"' -PurlPath='"ping/android"'`
 
-In this example, if the user enters the phone number "0000000000" and clicks the send button,
-a `POST` request with the body `{"phoneNumber": "0000000000", "message": "Sample SMS message to send"}`
-will be sent to `http://sample.com/ping/android`
+Result:
+
+[Example configuration](assets/ping-example-configuration-screenshot.png)
+
+When the user enters the phone number "0000000000" and clicks the send button,
+a `POST` request will be made to `http://sample.com/ping/android` with the body
+`{"phoneNumber": "0000000000", "message": "Sample SMS message to send"}`
 
 The expected response is `{"success": true, "message": "details if needed"}`
 
