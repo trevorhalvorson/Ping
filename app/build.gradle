@@ -16,7 +16,7 @@ def pin
 def message
 def urlBase, urlPath
 
-task(configure) {
+task(configureApp) {
     titleText = props.get("titleText")
     titleTextSize = props.get("titleTextSize")
     titleTextColor = props.get("titleTextColor")
@@ -48,6 +48,12 @@ task(configure) {
 
     urlBase = props.get("urlBase")
     urlPath = props.get("urlPath")
+}
+
+tasks.whenTaskAdded { task ->
+    if (task.name == 'assembleRelease') {
+        task.dependsOn('configureApp')
+    }
 }
 
 android {
