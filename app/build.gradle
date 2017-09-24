@@ -67,12 +67,17 @@ android {
             if (keystorePropsFile.exists()) {
                 def signingProps = new Properties()
                 signingProps.load(new FileInputStream(keystorePropsFile))
-                if (signingProps.get("storeFile") != null) {
-                    storeFile file(signingProps.get("storeFile"))
-                    storePassword signingProps.get("storePassword")
-                    keyAlias signingProps.get("keyAlias")
-                    keyPassword signingProps.get("keyPassword")
+                if (signingProps.get("PING_STORE_FILE") != null) {
+                    storeFile file(signingProps.get("PING_STORE_FILE"))
+                    storePassword signingProps.get("PING_STORE_PASSWORD")
+                    keyAlias signingProps.get("PING_KEY_ALIAS")
+                    keyPassword signingProps.get("PING_KEY_PASSWORD")
                 }
+            } else {
+                storeFile file(System.getenv("PING_STORE_FILE"))
+                storePassword System.getenv("PING_STORE_PASSWORD")
+                keyAlias System.getenv("PING_KEY_ALIAS")
+                keyPassword System.getenv("PING_KEY_PASSWORD")
             }
         }
     }

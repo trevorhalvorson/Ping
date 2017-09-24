@@ -51,9 +51,11 @@ The expected response is `{"success": true, "message": "details if needed"}`
 
 ### Signing
 
-Signing is configured in a `keystore.properties` file at the root of the project.
+Signing can be configured in a `keystore.properties` file at the root of the project or by setting
+system environment variables.
+
 The required properties are:
-- `storeFile`: Path to the `.jks` file
-- `storePassword`
-- `keyAlias`
-- `keyPassword`
+- `PING_STORE_FILE`: Path to the `.jks` file
+- `PING_STORE_PASSWORD`
+- `PING_KEY_ALIAS`
+- `PING_KEY_PASSWORD`
