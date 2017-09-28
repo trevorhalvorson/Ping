@@ -124,18 +124,35 @@
         android:text="9"
         app:autoSizeTextType="uniform" />
 
-    <Button
+    <ImageButton
         android:id="@+id/num_pad_blank"
         android:layout_column="0"
         android:layout_columnWeight="1"
         android:layout_row="3"
         android:layout_rowWeight="1"
-        android:background="@android:color/transparent"
+        android:background="@color/transparent"
         android:clickable="true"
+        android:contentDescription="@string/config_button_text"
         android:focusable="true"
         android:gravity="center"
         android:padding="@dimen/num_pad_item_padding"
-        app:autoSizeTextType="uniform" />
+        android:src="@drawable/ic_settings_transparent"
+        android:visibility="visible" />
+
+    <ImageButton
+        android:id="@+id/config_button"
+        android:layout_column="0"
+        android:layout_columnWeight="1"
+        android:layout_row="3"
+        android:layout_rowWeight="1"
+        android:background="@color/white"
+        android:clickable="true"
+        android:contentDescription="@string/config_button_text"
+        android:focusable="true"
+        android:gravity="center"
+        android:padding="@dimen/num_pad_item_padding"
+        android:src="@drawable/ic_settings_black"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/num_pad_0"

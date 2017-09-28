@@ -6,4 +6,13 @@
     <string name="progress_dialog_title_text">Sending…</string>
     <string name="progress_dialog_message_text">Your message is on its way</string>
     <string name="send_message_error_dialog_title_text">Error</string>
+    <string name="pin_edit_hint">PIN</string>
+    <string name="config_button_text">Config</string>
+    <string name="dialog_pin_title">Enter PIN</string>
+    <string name="dialog_pin_positive_button">Submit</string>
+    <string name="dialog_pin_negative_button">Cancel</string>
+    <string name="pin_error_message">Incorrect PIN</string>
+    <string name="dialog_admin_title">Admin</string>
+    <string name="dialog_admin_negative_button">Exit Admin Mode</string>
+    <string name="edit_configs_button_text">Show Config Editor</string>
 </resources>

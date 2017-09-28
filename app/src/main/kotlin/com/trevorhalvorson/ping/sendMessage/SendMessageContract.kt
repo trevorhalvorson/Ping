@@ -17,11 +17,19 @@ interface SendMessageContract {
 
         fun clearInput()
 
+        fun showPinError()
+
+        fun showAdminView()
+
+        fun showConfigView()
+
     }
 
     interface Presenter : BasePresenter {
 
         fun sendMessage(phoneNumber: String, message: String)
+
+        fun submitPin(pin: String): Boolean
 
     }
 }

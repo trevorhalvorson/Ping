@@ -1,5 +1,6 @@
 package com.trevorhalvorson.ping.sendMessage
 
+import com.trevorhalvorson.ping.BuildConfig
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -38,6 +39,16 @@ class SendMessagePresenter @Inject constructor(
                 }, {
                     view.showError(it.message)
                 }))
+    }
+
+    override fun submitPin(pin: String): Boolean {
+        val correct = BuildConfig.PIN == pin
+        if (correct) {
+            view.showAdminView()
+        } else {
+            view.showPinError()
+        }
+        return correct
     }
 
 }

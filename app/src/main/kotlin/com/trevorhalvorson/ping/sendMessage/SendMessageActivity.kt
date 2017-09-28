@@ -4,12 +4,16 @@ import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.TextInputEditText
 import android.telephony.PhoneNumberUtils
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Patterns
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
@@ -58,14 +62,47 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
         number_edit_text.text.clear()
     }
 
+    override fun showPinError() {
+        pinEditText?.error = getString(R.string.pin_error_message)
+    }
+
+    // TODO: allow for generating configured APK
+    override fun showAdminView() {
+        val view = layoutInflater.inflate(R.layout.dialog_admin, send_message_layout, false)
+
+        val dialog = AlertDialog.Builder(this).setView(view)
+                .setTitle(getString(R.string.dialog_admin_title))
+                .setNegativeButton(getString(R.string.dialog_admin_negative_button),
+                        { dialogInterface, i ->
+                            dialogInterface.dismiss()
+                            hideConfigButton()
+                            adminMode = false
+                        })
+                .create()
+
+        dialog.show()
+
+        view.findViewById<Button>(R.id.edit_configs_button).setOnClickListener {
+            showConfigView()
+            dialog.dismiss()
+        }
+    }
+
+    override fun showConfigView() {
+        RemixerFragment.newInstance().showRemixer(supportFragmentManager,
+                RemixerFragment.REMIXER_TAG)
+    }
+
     private var progressDialog: ProgressDialog? = null
     private var errorDialog: AlertDialog? = null
 
     private var message = BuildConfig.MESSAGE
     private var imageUrl = BuildConfig.IMAGE_URL
     private var pin = BuildConfig.PIN
-    private var blankClickCount = 0
     private var phoneNumber: String? = null
+
+    private var adminMode: Boolean = false
+    private var pinEditText: TextInputEditText? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,10 +116,10 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
         }
 
         number_edit_text.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
+            override fun afterTextChanged(editable: Editable?) {
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(number: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(number: CharSequence, p1: Int, p2: Int, p3: Int) {
@@ -116,19 +153,57 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
             true
         }
 
+        var blankClickCount = 0
         num_pad_blank.setOnClickListener {
-            // TODO: launch dialog and require PIN before show remix fragment
-            if (blankClickCount++ == 7) {
-                RemixerFragment.newInstance().attachToButton(this, num_pad_blank)
+            if (++blankClickCount == 7) {
+                showConfigButton()
                 blankClickCount = 0
+            }
+        }
+
+        config_button.setOnClickListener {
+            if (adminMode) {
+                showAdminView()
+            } else {
+                val view = layoutInflater.inflate(R.layout.dialog_pin, send_message_layout, false)
+
+                pinEditText = view.findViewById(R.id.pin_edit_text)
+
+                val dialog = AlertDialog.Builder(this).setView(view)
+                        .setTitle(getString(R.string.dialog_pin_title))
+                        .setNegativeButton(getString(R.string.dialog_pin_negative_button),
+                                { dialogInterface, i ->
+                                    dialogInterface.dismiss()
+                                    hideConfigButton()
+                                })
+                        .create()
+
+                dialog.show()
+
+                view.findViewById<Button>(R.id.submit_pin_button).setOnClickListener {
+                    if (sendMessagePresenter.submitPin(pinEditText?.text.toString())) {
+                        adminMode = true
+                        dialog.dismiss()
+                    }
+                }
             }
         }
 
         RemixerBinder.bind(this)
     }
 
-    override fun onClick(p0: View?) {
-        number_edit_text.text.append((p0 as TextView).text)
+    private fun showConfigButton() {
+        num_pad_blank.visibility = GONE
+        config_button.visibility = VISIBLE
+    }
+
+    private fun hideConfigButton() {
+        config_button.visibility = GONE
+        num_pad_blank.visibility = VISIBLE
+    }
+
+    override fun onClick(view: View?) {
+        number_edit_text.text.append((view as TextView).text)
     }
 
     override fun onBackPressed() {
