@@ -12,6 +12,7 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Patterns
+import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -276,7 +277,7 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
             minValue = 12F, maxValue = 120F)
     fun setTitleTextSize(textSize: Float?) {
         if (textSize != null) {
-            title_text.textSize = textSize
+            title_text.setTextSize(COMPLEX_UNIT_PX, textSize)
         }
     }
 
@@ -378,7 +379,7 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
             minValue = 12F, maxValue = 120F)
     fun setCopyTextSize(textSize: Float?) {
         if (textSize != null) {
-            copy_text.textSize = textSize
+            copy_text.setTextSize(COMPLEX_UNIT_PX, textSize)
         }
     }
 
