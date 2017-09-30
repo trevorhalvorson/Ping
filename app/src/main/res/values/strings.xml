@@ -3,9 +3,9 @@
     <string name="send_button_text">Send Message</string>
     <string name="dialer_phone_edit_hint">Phone Number</string>
     <string name="image_content_description">Your configurable image</string>
-    <string name="progress_dialog_title_text">Sending…</string>
-    <string name="progress_dialog_message_text">Your message is on its way</string>
-    <string name="send_message_error_dialog_title_text">Error</string>
+    <string name="message_progress_dialog_title_text">Sending…</string>
+    <string name="message_progress_dialog_message_text">Your message is on its way</string>
+    <string name="error_dialog_title_text">Error</string>
     <string name="pin_edit_hint">PIN</string>
     <string name="config_button_text">Config</string>
     <string name="dialog_pin_title">Enter PIN</string>
@@ -15,4 +15,12 @@
     <string name="dialog_admin_title">Admin</string>
     <string name="dialog_admin_negative_button">Exit Admin Mode</string>
     <string name="edit_configs_button_text">Show Config Editor</string>
+    <string name="show_builder_button_text">Build my app</string>
+    <string name="dialog_builder_negative_button">Cancel</string>
+    <string name="dialog_builder_positive_button">Start</string>
+    <string name="show_builder_view_button_text">Build my App</string>
+    <string name="builder_confirmation_message">An APK with your configurations will be sent to your email</string>
+    <string name="builder_progress_dialog_message_text">Your new app will arrive in your inbox soon</string>
+    <string name="builder_progress_dialog_title_text">Creating your app..</string>
+    <string name="start_builder_button_text">Build</string>
 </resources>

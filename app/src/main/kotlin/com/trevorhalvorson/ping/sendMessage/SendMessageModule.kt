@@ -1,6 +1,6 @@
 package com.trevorhalvorson.ping.sendMessage
 
-import com.trevorhalvorson.ping.injection.scopes.PerActivity
+import com.trevorhalvorson.ping.injection.scope.PerActivity
 import dagger.Module
 import dagger.Provides
 
@@ -19,4 +19,5 @@ open class SendMessageModule {
                                              api: SendMessageApi): SendMessageContract.Presenter {
         return SendMessagePresenter(view, api)
     }
+
 }

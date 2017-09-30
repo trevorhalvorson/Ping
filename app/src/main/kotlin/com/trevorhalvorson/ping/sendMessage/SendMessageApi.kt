@@ -7,7 +7,7 @@ import retrofit2.http.POST
 
 interface SendMessageApi {
 
-    @POST(BuildConfig.URL_PATH)
+    @POST(BuildConfig.MESSAGING_URL_PATH)
     fun postMessage(@Body body: SendMessageRequest): Observable<SendMessageResponse>
 
 }

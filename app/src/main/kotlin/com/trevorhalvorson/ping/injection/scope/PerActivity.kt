@@ -1,4 +1,4 @@
-package com.trevorhalvorson.ping.injection.scopes
+package com.trevorhalvorson.ping.injection.scope
 
 import javax.inject.Scope
 

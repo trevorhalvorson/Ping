@@ -2,19 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <Button
-        android:id="@+id/edit_configs_button"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/edit_configs_button_text" />
+        android:text="@string/builder_confirmation_message"
+        android:textAlignment="center" />
 
     <Button
-        android:id="@+id/show_builder_view_button"
-        android:layout_width="match_parent"
+        android:id="@+id/start_builder_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/show_builder_view_button_text" />
+        android:text="@string/start_builder_button_text" />
 
 </LinearLayout>

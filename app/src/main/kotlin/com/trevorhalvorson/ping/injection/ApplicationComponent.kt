@@ -5,7 +5,7 @@ import com.trevorhalvorson.ping.PingApplication
 import com.trevorhalvorson.ping.injection.module.ActivityBindingModule
 import com.trevorhalvorson.ping.injection.module.ApplicationModule
 import com.trevorhalvorson.ping.injection.module.NetworkModule
-import com.trevorhalvorson.ping.injection.scopes.PerApplication
+import com.trevorhalvorson.ping.injection.scope.PerApplication
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector

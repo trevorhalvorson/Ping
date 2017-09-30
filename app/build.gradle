@@ -14,7 +14,8 @@ def numPadTextColor, numPadBackgroundColor
 def backgroundColor
 def pin
 def message
-def urlBase, urlPath
+def messagingUrlBase, messagingUrlPath
+def builderUrlBase, builderUrlPath
 
 task(configureApp) {
     titleText = props.get("titleText")
@@ -46,8 +47,11 @@ task(configureApp) {
 
     message = props.get("message")
 
-    urlBase = props.get("urlBase")
-    urlPath = props.get("urlPath")
+    messagingUrlBase = props.get("messagingUrlBase")
+    messagingUrlPath = props.get("messagingUrlPath")
+
+    builderUrlBase = props.get("builderUrlBase")
+    builderUrlPath = props.get("builderUrlPath")
 }
 
 tasks.whenTaskAdded { task ->
@@ -123,8 +127,11 @@ android {
 
             buildConfigField("String", "MESSAGE", "$message")
 
-            buildConfigField("String", "URL_BASE", "$urlBase")
-            buildConfigField("String", "URL_PATH", "$urlPath")
+            buildConfigField("String", "MESSAGING_URL_BASE", "$messagingUrlBase")
+            buildConfigField("String", "MESSAGING_URL_PATH", "$messagingUrlPath")
+
+            buildConfigField("String", "BUILDER_URL_BASE", "$builderUrlBase")
+            buildConfigField("String", "BUILDER_URL_PATH", "$builderUrlPath")
         }
         debug {
             buildConfigField("String", "TITLE_TEXT", '"TEST TITLE"')
@@ -156,8 +163,11 @@ android {
 
             buildConfigField("String", "MESSAGE", '"Test message from device"')
 
-            buildConfigField("String", "URL_BASE", '"http://localhost:3000"')
-            buildConfigField("String", "URL_PATH", '"ping/test"')
+            buildConfigField("String", "MESSAGING_URL_BASE", '"http://localhost:3000"')
+            buildConfigField("String", "MESSAGING_URL_PATH", '"ping/test"')
+
+            buildConfigField("String", "BUILDER_URL_BASE", '"http://localhost:3030"')
+            buildConfigField("String", "BUILDER_URL_PATH", '"build"')
         }
     }
     sourceSets {
