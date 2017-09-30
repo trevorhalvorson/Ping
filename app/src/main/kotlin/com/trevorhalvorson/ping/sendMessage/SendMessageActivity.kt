@@ -105,14 +105,14 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
                             main_image.scaleType.toString(),
                             copy_text.text.toString(),
                             copy_text.textSize.toString(),
-                            copy_text.currentTextColor.toString(),
+                            copy_text.currentTextColor.toHex(),
                             send_button.text.toString(),
-                            send_button.currentTextColor.toString(),
+                            send_button.currentTextColor.toHex(),
                             (send_button.background as ColorDrawable).color.toHex(),
-                            number_edit_text.currentTextColor.toString(),
+                            number_edit_text.currentTextColor.toHex(),
                             (number_text_input_layout.background as ColorDrawable).color
                                     .toHex(),
-                            num_pad_0.currentTextColor.toString(),
+                            num_pad_0.currentTextColor.toHex(),
                             (layout_number_pad.background as ColorDrawable).color.toHex(),
                             (container_linear_layout.background as ColorDrawable).color
                                     .toHex(),
@@ -280,7 +280,6 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
         }
     }
 
-    // TODO: change color hex to Int
     @ColorListVariableMethod(title = "Title Text Color",
             initialValue = BuildConfig.TITLE_TEXT_COLOR, limitedToValues = intArrayOf(
             0xFF000000.toInt(),
