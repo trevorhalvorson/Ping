@@ -2,7 +2,7 @@ package com.trevorhalvorson.ping.injection.module
 
 import android.app.Application
 import android.content.Context
-import com.trevorhalvorson.ping.injection.scopes.PerApplication
+import com.trevorhalvorson.ping.injection.scope.PerApplication
 import dagger.Module
 import dagger.Provides
 

@@ -2,6 +2,8 @@ package com.trevorhalvorson.ping.sendMessage
 
 import android.app.AlertDialog
 import android.app.ProgressDialog
+import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.TextInputEditText
@@ -20,8 +22,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions.*
 import com.google.android.libraries.remixer.annotation.*
 import com.google.android.libraries.remixer.ui.view.RemixerFragment
+import com.google.gson.Gson
 import com.trevorhalvorson.ping.BuildConfig
 import com.trevorhalvorson.ping.R
+import com.trevorhalvorson.ping.builder.BuilderActivity
+import com.trevorhalvorson.ping.builder.BuilderConfig
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_send_message.*
 import kotlinx.android.synthetic.main.layout_number_pad.*
@@ -36,8 +41,9 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
     }
 
     override fun showProgress() {
-        progressDialog = ProgressDialog.show(this, getString(R.string.progress_dialog_title_text),
-                getString(R.string.progress_dialog_message_text), true, false)
+        progressDialog = ProgressDialog.show(this,
+                getString(R.string.message_progress_dialog_title_text),
+                getString(R.string.message_progress_dialog_message_text), true, false)
     }
 
     override fun hideProgress() {
@@ -47,7 +53,7 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
     override fun showError(error: String?) {
         if (error != null) {
             errorDialog = AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.send_message_error_dialog_title_text))
+                    .setTitle(getString(R.string.error_dialog_title_text))
                     .setMessage(error)
                     .create()
             errorDialog?.show()
@@ -66,15 +72,14 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
         pinEditText?.error = getString(R.string.pin_error_message)
     }
 
-    // TODO: allow for generating configured APK
     override fun showAdminView() {
         val view = layoutInflater.inflate(R.layout.dialog_admin, send_message_layout, false)
 
         val dialog = AlertDialog.Builder(this).setView(view)
                 .setTitle(getString(R.string.dialog_admin_title))
                 .setNegativeButton(getString(R.string.dialog_admin_negative_button),
-                        { dialogInterface, i ->
-                            dialogInterface.dismiss()
+                        { dialogInterface, _ ->
+                            dialogInterface.cancel()
                             hideConfigButton()
                             adminMode = false
                         })
@@ -84,7 +89,41 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
 
         view.findViewById<Button>(R.id.edit_configs_button).setOnClickListener {
             showConfigView()
-            dialog.dismiss()
+            dialog.cancel()
+        }
+
+        view.findViewById<Button>(R.id.show_builder_view_button).setOnClickListener {
+            val builderIntent = Intent(this, BuilderActivity::class.java)
+            builderIntent.putExtra("config", Gson().toJson(
+                    BuilderConfig(
+                            title_text.text.toString(),
+                            title_text.textSize.toString(),
+                            title_text.currentTextColor.toHex(),
+                            imageUrl,
+                            main_image.width.toString(),
+                            main_image.height.toString(),
+                            main_image.scaleType.toString(),
+                            copy_text.text.toString(),
+                            copy_text.textSize.toString(),
+                            copy_text.currentTextColor.toString(),
+                            send_button.text.toString(),
+                            send_button.currentTextColor.toString(),
+                            (send_button.background as ColorDrawable).color.toHex(),
+                            number_edit_text.currentTextColor.toString(),
+                            (number_text_input_layout.background as ColorDrawable).color
+                                    .toHex(),
+                            num_pad_0.currentTextColor.toString(),
+                            (layout_number_pad.background as ColorDrawable).color.toHex(),
+                            (container_linear_layout.background as ColorDrawable).color
+                                    .toHex(),
+                            pin,
+                            message,
+                            BuildConfig.MESSAGING_URL_BASE,
+                            BuildConfig.MESSAGING_URL_PATH,
+                            BuildConfig.BUILDER_URL_BASE,
+                            BuildConfig.BUILDER_URL_PATH
+                    )))
+            startActivity(builderIntent)
         }
     }
 
@@ -172,8 +211,8 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
                 val dialog = AlertDialog.Builder(this).setView(view)
                         .setTitle(getString(R.string.dialog_pin_title))
                         .setNegativeButton(getString(R.string.dialog_pin_negative_button),
-                                { dialogInterface, i ->
-                                    dialogInterface.dismiss()
+                                { dialogInterface, _ ->
+                                    dialogInterface.cancel()
                                     hideConfigButton()
                                 })
                         .create()
@@ -183,7 +222,7 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
                 view.findViewById<Button>(R.id.submit_pin_button).setOnClickListener {
                     if (sendMessagePresenter.submitPin(pinEditText?.text.toString())) {
                         adminMode = true
-                        dialog.dismiss()
+                        dialog.cancel()
                     }
                 }
             }
@@ -241,7 +280,7 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
         }
     }
 
-    // TODO: find a cleaner way to add colors on these methods
+    // TODO: change color hex to Int
     @ColorListVariableMethod(title = "Title Text Color",
             initialValue = BuildConfig.TITLE_TEXT_COLOR, limitedToValues = intArrayOf(
             0xFF000000.toInt(),
@@ -275,32 +314,32 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
     }
 
     @StringVariableMethod(title = "Image URL", initialValue = BuildConfig.IMAGE_URL)
-    fun setLogoImageUrl(url: String?) {
+    fun setMainImageUrl(url: String?) {
         if (!TextUtils.isEmpty(url)) {
             imageUrl = url!!
-            Glide.with(this).load(imageUrl).apply(centerCropTransform()).into(logo_image)
+            Glide.with(this).load(imageUrl).apply(centerCropTransform()).into(main_image)
         }
     }
 
     @RangeVariableMethod(title = "Image Width", initialValue = BuildConfig.IMAGE_WIDTH,
             minValue = 0F, maxValue = 1200F)
-    fun setLogoImageWidth(width: Float?) {
+    fun setMainImageWidth(width: Float?) {
         if (width != null) {
-            logo_image.layoutParams.width = width.toInt()
-            logo_image.requestLayout()
-            Glide.with(this).clear(logo_image)
-            Glide.with(this).load(imageUrl).into(logo_image)
+            main_image.layoutParams.width = width.toInt()
+            main_image.requestLayout()
+            Glide.with(this).clear(main_image)
+            Glide.with(this).load(imageUrl).into(main_image)
         }
     }
 
     @RangeVariableMethod(title = "Image Height", initialValue = BuildConfig.IMAGE_HEIGHT,
             minValue = 0F, maxValue = 1200F)
-    fun setLogoImageHeight(height: Float?) {
+    fun setMainImageHeight(height: Float?) {
         if (height != null) {
-            logo_image.layoutParams.height = height.toInt()
-            logo_image.requestLayout()
-            Glide.with(this).clear(logo_image)
-            Glide.with(this).load(imageUrl).into(logo_image)
+            main_image.layoutParams.height = height.toInt()
+            main_image.requestLayout()
+            Glide.with(this).clear(main_image)
+            Glide.with(this).load(imageUrl).into(main_image)
         }
     }
 
@@ -312,7 +351,7 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
             "FIT_CENTER",
             "FIT_XY"
     ))
-    fun setLogoImageScaleType(type: String?) {
+    fun setMainImageScaleType(type: String?) {
         val scaleType: ImageView.ScaleType? = when (type) {
             "CENTER" -> ImageView.ScaleType.CENTER
             "CENTER_CROP" -> ImageView.ScaleType.CENTER_CROP
@@ -323,10 +362,10 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
                 ImageView.ScaleType.CENTER
             }
         }
-        logo_image.scaleType = scaleType
-        logo_image.requestLayout()
-        Glide.with(this).clear(logo_image)
-        Glide.with(this).load(imageUrl).into(logo_image)
+        main_image.scaleType = scaleType
+        main_image.requestLayout()
+        Glide.with(this).clear(main_image)
+        Glide.with(this).load(imageUrl).into(main_image)
     }
 
     @StringVariableMethod(title = "Copy Text", initialValue = BuildConfig.COPY_TEXT)
@@ -631,4 +670,8 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
             pin = s
         }
     }
+}
+
+fun Int.toHex(): String {
+    return "0xFF" + String.format("%06X", 0xFFFFFF and this)
 }

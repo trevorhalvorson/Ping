@@ -12,9 +12,6 @@ class SendMessagePresenter @Inject constructor(
 
     private val subscription = CompositeDisposable()
 
-    init {
-    }
-
     override fun start() {
 
     }
