@@ -36,10 +36,11 @@ Available properties:
 - `messagingUrlPath`: URL path of the messaging service where the `POST` request will be sent
 - `builderUrlBase`: URL base of the app builder service where the `POST` request will be sent
 - `builderUrlPath`: URL path of the app builder service where the `POST` request will be sent
+- `email`: The email address the built APK will be sent
 
 Example:
 
-`./gradlew assembleRelease -PtitleText='"Sample Title"' -PtitleTextSize=40F -PtitleTextColor=0xFF000000 -PimageUrl='"https://avatars1.githubusercontent.com/u/30177?v=4&s=200"' -PimageWidth=250F -PimageHeight=250F -PimageScaleType='"CENTER_CROP"' -PcopyText='"Lorem ipsum"' -PcopyTextSize=20F -PcopyTextColor=0xFF000000 -PsendButtonText='"SEND"' -PsendButtonTextColor=0xFF000000 -PsendButtonBackgroundColor=0xFFCCCCCC -PphoneInputTextColor=0xFF000000 -PphoneInputBackgroundColor=0xFFFFFFFF -PnumPadTextColor=0xFF000000 -PnumPadBackgroundColor=0xFFFFFFFF -PbackgroundColor=0xFFFFFFFF -Ppin='"0000"' -Pmessage='"Sample SMS message to send"' -PmessagingUrlBase='"http://messaging-sample.com"' -PmessagingUrlPath='"ping/android"' -PbuilderUrlBase='"http://builder-sample.com"' -PbuilderUrlPath='"build"'`
+`./gradlew assembleRelease -PtitleText='"Sample Title"' -PtitleTextSize=40F -PtitleTextColor=0xFF000000 -PimageUrl='"https://avatars1.githubusercontent.com/u/30177?v=4&s=200"' -PimageWidth=250F -PimageHeight=250F -PimageScaleType='"CENTER_CROP"' -PcopyText='"Lorem ipsum"' -PcopyTextSize=20F -PcopyTextColor=0xFF000000 -PsendButtonText='"SEND"' -PsendButtonTextColor=0xFF000000 -PsendButtonBackgroundColor=0xFFCCCCCC -PphoneInputTextColor=0xFF000000 -PphoneInputBackgroundColor=0xFFFFFFFF -PnumPadTextColor=0xFF000000 -PnumPadBackgroundColor=0xFFFFFFFF -PbackgroundColor=0xFFFFFFFF -Ppin='"0000"' -Pmessage='"Sample SMS message to send"' -PmessagingUrlBase='"http://messaging-sample.com"' -PmessagingUrlPath='"ping/android"' -PbuilderUrlBase='"http://builder-sample.com"' -PbuilderUrlPath='"build"' -Pemail='"email@test.com"'`
 
 Result:
 
