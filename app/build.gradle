@@ -16,6 +16,7 @@ def pin
 def message
 def messagingUrlBase, messagingUrlPath
 def builderUrlBase, builderUrlPath
+def email
 
 task(configureApp) {
     titleText = props.get("titleText")
@@ -52,6 +53,8 @@ task(configureApp) {
 
     builderUrlBase = props.get("builderUrlBase")
     builderUrlPath = props.get("builderUrlPath")
+
+    email = props.get("email")
 }
 
 tasks.whenTaskAdded { task ->
@@ -132,6 +135,8 @@ android {
 
             buildConfigField("String", "BUILDER_URL_BASE", "$builderUrlBase")
             buildConfigField("String", "BUILDER_URL_PATH", "$builderUrlPath")
+
+            buildConfigField("String", "EMAIL", "$email")
         }
         debug {
             buildConfigField("String", "TITLE_TEXT", '"TEST TITLE"')
@@ -168,6 +173,8 @@ android {
 
             buildConfigField("String", "BUILDER_URL_BASE", '"http://localhost:3030"')
             buildConfigField("String", "BUILDER_URL_PATH", '"build"')
+
+            buildConfigField("String", "EMAIL", '"email@localhost"')
         }
     }
     sourceSets {

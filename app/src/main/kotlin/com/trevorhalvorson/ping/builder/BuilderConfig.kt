@@ -26,7 +26,8 @@ open class BuilderConfig(
         @SerializedName("messagingUrlBase") private var messagingUrlBase: String,
         @SerializedName("messagingUrlPath") private var messagingUrlPath: String,
         @SerializedName("builderUrlBase") private var builderUrlBase: String,
-        @SerializedName("builderUrlPath") private var builderUrlPath: String
+        @SerializedName("builderUrlPath") private var builderUrlPath: String,
+        @SerializedName("email") private var email: String
 ) {
 
     init {
@@ -45,6 +46,7 @@ open class BuilderConfig(
         messagingUrlPath = "\"$messagingUrlPath\""
         builderUrlBase = "\"$builderUrlBase\""
         builderUrlPath = "\"$builderUrlPath\""
+        email = "\"$email\""
     }
 
 }

@@ -122,7 +122,8 @@ class SendMessageActivity : AppCompatActivity(), SendMessageContract.View, View.
                             BuildConfig.MESSAGING_URL_BASE,
                             BuildConfig.MESSAGING_URL_PATH,
                             BuildConfig.BUILDER_URL_BASE,
-                            BuildConfig.BUILDER_URL_PATH
+                            BuildConfig.BUILDER_URL_PATH,
+                            BuildConfig.EMAIL
                     )))
             startActivity(builderIntent)
         }
